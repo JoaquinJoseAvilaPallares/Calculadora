@@ -5,7 +5,6 @@ from tkinter import messagebox, Menu
 
 class Calculadora(tk.Tk):
     """Instanciamos"""
-
     def __init__(self):
         super().__init__()
         self.geometry('340x380')
@@ -27,7 +26,6 @@ class Calculadora(tk.Tk):
     """METODOS DE CLASE"""
 
     '''Metodo crear Menu'''
-
     def _crear_menu(self):
         menu_principal = Menu(self)
         submenu_archivo = Menu(menu_principal, tearoff=0)
@@ -41,7 +39,6 @@ class Calculadora(tk.Tk):
         self.config(menu=menu_principal)
 
     '''Metodo crear Componentes'''
-
     def _creacion_componentes(self):
         # Creamos un frame para la caja de texto
         entrada_frame = tk.Frame(self, width=400, height=150, bg='aquamarine')
@@ -126,7 +123,6 @@ class Calculadora(tk.Tk):
                                 command=self._evento_igual).grid(row=4, column=3, padx=3, pady=2)
 
     '''Metodo salir'''
-
     def _salir(self):
         self.quit()
         self.destroy()
@@ -134,53 +130,52 @@ class Calculadora(tk.Tk):
         sys.exit()
 
     '''Metodo salir'''
-
     def _acerca_de(self):
         messagebox.showinfo('Acerca de calculadora', 'Calculadora en proceso de mejora')
 
     '''Metodo limpiar'''
-
     def _evento_limpiar(self):
         self.expresion = ''
         self.entrada_texto.set(self.expresion)
 
     '''Metodo Click'''
-
     def _evento_click(self, elemento):
         # Concatenamos el nuevo elemento a la expresion ya existente
         self.expresion = f'{self.expresion}{elemento}'
         self.entrada_texto.set(self.expresion)
 
     '''Metodo igual'''
-
     def _evento_igual(self):
         # eval evalua la expresion str como una expresion aritmetica
         try:
             if self.expresion:
                 self._evento_porcentaje()
                 resultado = str(eval(self.expresion))
-                self.entrada_texto.set(resultado)
+                
         except Exception as e:
             messagebox.showerror('Error', f'Ocurrio un error: {e}')
             self.entrada_texto.set('')
         finally:
-            self.expresion = ''
+            self.entrada_texto.set(resultado)
+            # self.expresion = ''
 
     '''Metodo porcentaje'''
-
     def _evento_porcentaje(self):
         lista = list(self.expresion)
         if lista[-1] == '%':
-            lista = self.expresion.split('+')
-            self.expresion = f'({lista[0]})*({lista[1].replace('%', '/100)')}+({lista[0]})'
-
+            if '+' in lista:
+                lista = self.expresion.split('+')
+                self.expresion = f'({lista[0]})*({lista[1].replace('%', '/100)')}+({lista[0]})'
+            if '-' in lista:
+                lista = self.expresion.split('-')
+                self.expresion = f'({lista[0]})-({lista[0]})*({lista[1].replace('%', '/100')})'
+            
     '''Metodo parentesis'''
-
     def _evento_parentesis(self):
         pass
 
-    '''Metodo corregir'''
 
+    '''Metodo corregir'''
     def _evento_corregir(self):
         if self.expresion == '':
             self.entrada_texto.set('')
@@ -189,7 +184,6 @@ class Calculadora(tk.Tk):
             lista.remove(lista[-1])
             self.expresion = ''.join(lista)
             self.entrada_texto.set(self.expresion)
-
 
 if __name__ == '__main__':
     caculadora = Calculadora()
